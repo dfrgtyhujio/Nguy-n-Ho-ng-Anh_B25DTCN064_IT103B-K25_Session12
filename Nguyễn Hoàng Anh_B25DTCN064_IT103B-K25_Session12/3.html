@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        let phones = [
+            { id: 1, name: "iPhone 13", price: 20000000, quantity: 5, company: "Apple" },
+            { id: 2, name: "Galaxy S22", price: 18000000, quantity: 6, company: "Samsung" },
+            { id: 3, name: "Redmi Note 12", price: 7000000, quantity: 10, company: "Xiaomi" },
+            { id: 4, name: "iPhone 12", price: 15000000, quantity: 4, company: "Apple" }
+        ];
+
+        let cart = [];
+        let choice;
+
+        do {
+
+            choice = +prompt(`
+                1. Hiển thị điện thoại theo hãng
+                2. Thêm điện thoại mới
+                3. Tìm kiếm điện thoại theo tên hoặc id
+                4. Mua điện thoại
+                5. Thanh toán giỏ hàng
+                6. Sắp xếp giá tăng dần
+                7. Sắp xếp giá giảm dần
+                8. Tổng tiền điện thoại trong kho
+                9. Tổng số lượng điện thoại theo hãng
+                10. Thoát
+            `);
+
+            switch (choice) {
+
+                case 1:
+                    let company = prompt("Nhập hãng điện thoại:");
+                    let list = phones.filter(p => p.company.toLowerCase() === company.toLowerCase());
+
+                    if (list.length === 0) {
+                        console.log("Không có điện thoại của hãng này");
+                    } else {
+                        console.log(list);
+                    }
+                    break;
+
+                case 2:
+                    let id = +prompt("Nhập id:");
+                    let name = prompt("Nhập tên điện thoại:");
+                    let price = +prompt("Nhập giá:");
+                    let quantity = +prompt("Nhập số lượng:");
+                    let newCompany = prompt("Nhập hãng:");
+
+                    phones.push({ id, name, price, quantity, company: newCompany });
+
+                    console.log("Thêm điện thoại thành công");
+                    break;
+
+                case 3:
+                    let keyword = prompt("Nhập id hoặc tên điện thoại:");
+
+                    let result = phones.filter(p =>
+                        p.id == keyword ||
+                        p.name.toLowerCase().includes(keyword.toLowerCase())
+                    );
+
+                    if (result.length === 0) {
+                        console.log("Không tìm thấy điện thoại");
+                    } else {
+                        console.log(result);
+                    }
+                    break;
+
+                case 4:
+                    let buyId = +prompt("Nhập id điện thoại cần mua:");
+                    let phone = phones.find(p => p.id === buyId);
+
+                    if (!phone) {
+                        console.log("Điện thoại không tồn tại");
+                    } else {
+
+                        let buyQty = +prompt("Nhập số lượng:");
+
+                        if (buyQty > phone.quantity || phone.quantity === 0) {
+                            console.log("Không đủ số lượng trong kho");
+                        } else {
+
+                            phone.quantity -= buyQty;
+
+                            let item = cart.find(p => p.id === buyId);
+
+                            if (item) {
+                                item.quantity += buyQty;
+                            } else {
+                                cart.push({
+                                    id: phone.id,
+                                    name: phone.name,
+                                    price: phone.price,
+                                    quantity: buyQty,
+                                    company: phone.company
+                                });
+                            }
+
+                            console.log("Mua điện thoại thành công");
+                        }
+                    }
+                    break;
+
+                case 5:
+                    let total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+
+                    console.log("Tổng tiền thanh toán:", total);
+                    console.log("Thanh toán thành công");
+
+                    cart = [];
+                    break;
+
+                case 6:
+                    phones.sort((a, b) => a.price - b.price);
+                    console.log("Danh sách sau khi sắp xếp tăng dần:");
+                    console.log(phones);
+                    break;
+
+                case 7:
+                    phones.sort((a, b) => b.price - a.price);
+                    console.log("Danh sách sau khi sắp xếp giảm dần:");
+                    console.log(phones);
+                    break;
+
+                case 8:
+                    let totalValue = phones.reduce((sum, p) => sum + p.price * p.quantity, 0);
+                    console.log("Tổng tiền điện thoại trong kho:", totalValue);
+                    break;
+
+                case 9:
+                    let companyMap = {};
+
+                    phones.forEach(p => {
+                        if (!companyMap[p.company]) {
+                            companyMap[p.company] = 0;
+                        }
+                        companyMap[p.company] += p.quantity;
+                    });
+
+                    console.log("Tổng số lượng theo hãng:");
+                    for (let key in companyMap) {
+                        console.log(key + " - " + companyMap[key]);
+                    }
+                    break;
+
+                case 10:
+                    console.log("Thoát chương trình");
+                    break;
+
+                default:
+                    console.log("Lựa chọn không hợp lệ");
+            }
+
+        } while (choice !== 10);
+    </script>
+</body>
+
+</html>

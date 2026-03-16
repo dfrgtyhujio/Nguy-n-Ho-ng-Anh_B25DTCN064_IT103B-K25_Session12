@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        let products = [
+            { id: 1, name: "mèn mén", price: 20000, quantity: 20, category: "món ăn dân tộc Mông" },
+            { id: 2, name: "mứt", price: 80000, quantity: 21, category: "món ăn dân tộc Kinh" },
+            { id: 3, name: "cơm lam", price: 40000, quantity: 15, category: "món ăn dân tộc Mông" },
+            { id: 4, name: "bánh đậu xanh", price: 60000, quantity: 30, category: "món ăn dân tộc Kinh" }
+        ];
+
+        let cart = [];
+
+        let choice;
+
+        do {
+            choice = +prompt(`
+                1. Hiển thị sản phẩm theo danh mục
+                2. Mua sản phẩm theo id
+                3. Sắp xếp giá tăng dần
+                4. Sắp xếp giá giảm dần
+                5. Tính tiền giỏ hàng
+                6. Thoát
+            `);
+
+            switch (choice) {
+
+                case 1:
+                    let cate = prompt("Nhập tên danh mục:");
+                    let result = products.filter(p => p.category === cate);
+
+                    if (result.length === 0) {
+                        console.log("Không có sản phẩm trong danh mục");
+                    } else {
+                        console.log(result);
+                    }
+                    break;
+
+                case 2:
+                    let id = +prompt("Nhập id sản phẩm cần mua:");
+
+                    let product = products.find(p => p.id === id);
+
+                    if (!product) {
+                        console.log("Sản phẩm không có trong cửa hàng");
+                    } else {
+
+                        let qty = +prompt("Nhập số lượng muốn mua:");
+
+                        if (product.quantity === 0 || qty > product.quantity) {
+                            console.log("Không đủ số lượng sản phẩm");
+                        } else {
+
+                            product.quantity -= qty;
+
+                            let cartItem = cart.find(p => p.id === id);
+
+                            if (cartItem) {
+                                cartItem.quantity += qty;
+                            } else {
+                                cart.push({
+                                    id: product.id,
+                                    name: product.name,
+                                    price: product.price,
+                                    quantity: qty
+                                });
+                            }
+
+                            console.log("Mua thành công");
+                        }
+                    }
+                    break;
+
+                case 3:
+                    products.sort((a, b) => a.price - b.price);
+                    console.log("Danh sách sau khi sắp xếp tăng dần:");
+                    console.log(products);
+                    break;
+
+                case 4:
+                    products.sort((a, b) => b.price - a.price);
+                    console.log("Danh sách sau khi sắp xếp giảm dần:");
+                    console.log(products);
+                    break;
+
+                case 5:
+                    let total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+                    console.log("Tổng tiền phải thanh toán:", total);
+                    break;
+
+                case 6:
+                    console.log("Thoát chương trình");
+                    break;
+
+                default:
+                    console.log("Lựa chọn không hợp lệ");
+            }
+
+        } while (choice !== 6);
+    </script>
+</body>
+
+</html>

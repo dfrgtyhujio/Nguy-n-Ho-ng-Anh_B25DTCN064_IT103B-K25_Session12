@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        let books = [
+            { id: 1, name: "Dế Mèn Phiêu Lưu Ký", price: 50000, quantity: 10, category: "Thiếu nhi" },
+            { id: 2, name: "Lão Hạc", price: 40000, quantity: 8, category: "Văn học" },
+            { id: 3, name: "Sherlock Holmes", price: 90000, quantity: 5, category: "Trinh thám" },
+            { id: 4, name: "Harry Potter", price: 120000, quantity: 7, category: "Fantasy" }
+        ];
+
+        let cart = [];
+        let choice;
+
+        do {
+
+            choice = +prompt(`
+                1. Hiển thị sách theo thể loại
+                2. Thêm sách mới
+                3. Tìm kiếm sách theo tên hoặc id
+                4. Mua sách
+                5. Sắp xếp giá tăng dần
+                6. Sắp xếp giá giảm dần
+                7. Tính tổng sách đã mua và tổng tiền
+                8. Hiển thị tổng số lượng sách trong kho
+                9. Thoát
+            `);
+
+            switch (choice) {
+
+                case 1:
+                    let cate = prompt("Nhập thể loại sách:");
+                    let list = books.filter(book => book.category.toLowerCase() === cate.toLowerCase());
+
+                    if (list.length === 0) {
+                        console.log("Không có sách trong thể loại này");
+                    } else {
+                        console.log(list);
+                    }
+                    break;
+
+                case 2:
+                    let id = +prompt("Nhập id sách:");
+                    let name = prompt("Nhập tên sách:");
+                    let price = +prompt("Nhập giá sách:");
+                    let quantity = +prompt("Nhập số lượng:");
+                    let category = prompt("Nhập thể loại:");
+
+                    books.push({ id, name, price, quantity, category });
+
+                    console.log("Thêm sách thành công");
+                    break;
+
+                case 3:
+                    let keyword = prompt("Nhập id hoặc tên sách:");
+
+                    let result = books.filter(book =>
+                        book.id == keyword ||
+                        book.name.toLowerCase().includes(keyword.toLowerCase())
+                    );
+
+                    if (result.length === 0) {
+                        console.log("Không tìm thấy sách");
+                    } else {
+                        console.log(result);
+                    }
+                    break;
+
+                case 4:
+                    let buyId = +prompt("Nhập id sách cần mua:");
+                    let book = books.find(b => b.id === buyId);
+
+                    if (!book) {
+                        console.log("Sách không tồn tại");
+                    } else {
+
+                        let buyQty = +prompt("Nhập số lượng muốn mua:");
+
+                        if (buyQty > book.quantity || book.quantity === 0) {
+                            console.log("Không đủ sách trong kho");
+                        } else {
+
+                            book.quantity -= buyQty;
+
+                            let item = cart.find(b => b.id === buyId);
+
+                            if (item) {
+                                item.quantity += buyQty;
+                            } else {
+                                cart.push({
+                                    id: book.id,
+                                    name: book.name,
+                                    price: book.price,
+                                    quantity: buyQty
+                                });
+                            }
+
+                            console.log("Mua sách thành công");
+                        }
+                    }
+                    break;
+
+                case 5:
+                    books.sort((a, b) => a.price - b.price);
+                    console.log("Danh sách sau khi sắp xếp tăng dần:");
+                    console.log(books);
+                    break;
+
+                case 6:
+                    books.sort((a, b) => b.price - a.price);
+                    console.log("Danh sách sau khi sắp xếp giảm dần:");
+                    console.log(books);
+                    break;
+
+                case 7:
+                    let totalQuantity = cart.reduce((sum, item) => sum + item.quantity, 0);
+                    let totalPrice = cart.reduce((sum, item) => sum + item.quantity * item.price, 0);
+
+                    console.log("Tổng số sách đã mua:", totalQuantity);
+                    console.log("Tổng tiền:", totalPrice);
+                    break;
+
+                case 8:
+                    let totalStock = books.reduce((sum, book) => sum + book.quantity, 0);
+                    console.log("Tổng số lượng sách trong kho:", totalStock);
+                    break;
+
+                case 9:
+                    console.log("Thoát chương trình");
+                    break;
+
+                default:
+                    console.log("Lựa chọn không hợp lệ");
+
+            }
+
+        } while (choice !== 9);
+    </script>
+</body>
+
+</html>

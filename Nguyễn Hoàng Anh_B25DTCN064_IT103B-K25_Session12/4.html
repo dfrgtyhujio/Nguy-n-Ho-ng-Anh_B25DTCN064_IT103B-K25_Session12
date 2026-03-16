@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        let courses = [];
+        let users = [];
+
+        let mainChoice;
+
+        do {
+
+            mainChoice = +prompt(`
+                1. Quản lý khóa học
+                2. Quản lý người dùng
+                3. Thoát
+            `);
+
+            switch (mainChoice) {
+
+                case 1:
+
+                    let courseChoice;
+
+                    do {
+
+                        courseChoice = +prompt(`
+                            1. Thêm khóa học
+                            2. Tìm khóa học theo tên
+                            3. Xóa khóa học
+                            4. Thoát
+                        `);
+
+                        switch (courseChoice) {
+
+                            case 1:
+                                let id = +prompt("Nhập id khóa học:");
+                                let name = prompt("Nhập tên khóa học:");
+                                let instructor = prompt("Nhập tên giáo viên:");
+
+                                courses.push({
+                                    id,
+                                    name,
+                                    instructor,
+                                    students: []
+                                });
+
+                                console.log("Thêm khóa học thành công");
+                                break;
+
+                            case 2:
+                                let keyword = prompt("Nhập tên khóa học:");
+
+                                let result = courses.filter(c =>
+                                    c.name.toLowerCase().includes(keyword.toLowerCase())
+                                );
+
+                                if (result.length === 0) {
+                                    console.log("Không tìm thấy khóa học");
+                                } else {
+                                    console.log(result);
+                                }
+                                break;
+
+                            case 3:
+                                let deleteId = +prompt("Nhập id khóa học cần xóa:");
+
+                                let index = courses.findIndex(c => c.id === deleteId);
+
+                                if (index === -1) {
+                                    console.log("Khóa học không tồn tại");
+                                } else {
+
+                                    courses.splice(index, 1);
+
+                                    users.forEach(user => {
+                                        user.registeredCourses = user.registeredCourses.filter(
+                                            courseId => courseId !== deleteId
+                                        );
+                                    });
+
+                                    console.log("Xóa khóa học thành công");
+                                }
+
+                                break;
+
+                        }
+
+                    } while (courseChoice !== 4);
+
+                    break;
+
+                case 2:
+
+                    let userChoice;
+
+                    do {
+
+                        userChoice = +prompt(`
+                            1. Thêm người dùng
+                            2. Đăng ký khóa học
+                            3. Hủy đăng ký khóa học
+                            4. Hiển thị khóa học của người dùng
+                            5. Thoát
+                        `);
+
+                        switch (userChoice) {
+
+                            case 1:
+                                let userId = +prompt("Nhập id người dùng:");
+                                let userName = prompt("Nhập tên người dùng:");
+
+                                users.push({
+                                    id: userId,
+                                    name: userName,
+                                    registeredCourses: []
+                                });
+
+                                console.log("Thêm người dùng thành công");
+                                break;
+
+                            case 2:
+                                let uid = +prompt("Nhập id người dùng:");
+                                let cid = +prompt("Nhập id khóa học:");
+
+                                let user = users.find(u => u.id === uid);
+                                let course = courses.find(c => c.id === cid);
+
+                                if (!user || !course) {
+                                    console.log("User hoặc khóa học không tồn tại");
+                                } else {
+
+                                    user.registeredCourses.push(cid);
+                                    course.students.push(uid);
+
+                                    console.log("Đăng ký khóa học thành công");
+                                }
+
+                                break;
+
+                            case 3:
+                                let uidCancel = +prompt("Nhập id người dùng:");
+                                let cidCancel = +prompt("Nhập id khóa học:");
+
+                                let userCancel = users.find(u => u.id === uidCancel);
+                                let courseCancel = courses.find(c => c.id === cidCancel);
+
+                                if (!userCancel || !courseCancel) {
+                                    console.log("Không tồn tại");
+                                } else {
+
+                                    userCancel.registeredCourses =
+                                        userCancel.registeredCourses.filter(id => id !== cidCancel);
+
+                                    courseCancel.students =
+                                        courseCancel.students.filter(id => id !== uidCancel);
+
+                                    console.log("Hủy đăng ký thành công");
+                                }
+
+                                break;
+
+                            case 4:
+                                let showId = +prompt("Nhập id người dùng:");
+
+                                let showUser = users.find(u => u.id === showId);
+
+                                if (!showUser) {
+                                    console.log("User không tồn tại");
+                                } else {
+
+                                    let listCourses = courses.filter(c =>
+                                        showUser.registeredCourses.includes(c.id)
+                                    );
+
+                                    console.log("Danh sách khóa học:");
+                                    console.log(listCourses);
+                                }
+
+                                break;
+
+                        }
+
+                    } while (userChoice !== 5);
+
+                    break;
+
+            }
+
+        } while (mainChoice !== 3);
+
+        console.log("Thoát chương trình");
+    </script>
+</body>
+
+</html>
